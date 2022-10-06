@@ -52,7 +52,7 @@ Passive turbulent plume server node.
 *Service call*
 
 ```bash
-rosservice call /plume/create_spheroid_plume "source: {x: 0.0, y: 0.0, z: 0.0}
+rosservice call /<plume_namespace>/create_spheroid_plume "source: {x: 0.0, y: 0.0, z: 0.0}
 orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}
 n_points: 0
 a: 0.0
@@ -82,7 +82,7 @@ Create a static plume in the shape of a spheroid.
 *Service call*
 
 ```bash
-rosservice call /plume/create_passive_scalar_turbulent_plume "turbulent_diffusion_coefficients: {x: 0.0, y: 0.0, z: 0.0}
+rosservice call /<plume_namespace>/create_passive_scalar_turbulent_plume "turbulent_diffusion_coefficients: {x: 0.0, y: 0.0, z: 0.0}
 source: {x: 0.0, y: 0.0, z: 0.0}
 buoyancy_flux: 0.0
 stability_param: 0.0
@@ -680,7 +680,7 @@ class PlumeSimulatorServer:
             self._plume_marker_publisher.publish(marker)
             pc_msg = PointCloud()
             pc_msg.header.stamp = rospy.Time.now()
-            pc_msg.header.frame_id = 'gripper_base_link'
+            pc_msg.header.frame_id = 'world'
             self._plume_point_cloud_publisher.publish(pc_msg)
             self._loading_plume.release()
             return True

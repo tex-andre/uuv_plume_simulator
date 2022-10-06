@@ -1,3 +1,17 @@
+# Copyright (c) 2016 The UUV Simulator Authors.
+# All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 import rospy
 import numpy as np
@@ -33,7 +47,7 @@ class Plume(object):
         assert n_points > 0, 'Number of points to generate the plume must be' \
             ' greater than zero'
         assert len(source_pos) == 3, 'Source position must have three elements'
-        assert source_pos[2] <= 1e7, 'Source Z coordinate is above the water' \
+        assert source_pos[2] <= 0, 'Source Z coordinate is above the water' \
             ' surface with respect to the ENU inertial frame'
 
         # Vector [N x 3] holding all the position vectors for each created
@@ -47,7 +61,7 @@ class Plume(object):
         # be generated
         self._x_lim = [-1e7, 1e7]
         self._y_lim = [-1e7, 1e7]
-        self._z_lim = [-1e7, 1e7]
+        self._z_lim = [-1e7, 0]
 
         # Position of the source of the plume
         self._source_pos = source_pos
@@ -263,13 +277,13 @@ class Plume(object):
         
         `True` if limits are valid.
         """
-        #assert min_value < 0, 'Minimum value must be lower than zero'
+        assert min_value < 0, 'Minimum value must be lower than zero'
         assert min_value < max_value, 'Limit interval is invalid'
 
         if self._source_pos[2] >= self._z_lim[0] and \
             self._source_pos[2] <= self._z_lim[1]:
             self._z_lim[0] = min_value
-            self._z_lim[1] = max_value
+            self._z_lim[1] = min(0, max_value)
             return True
         else:
             print('Plume source is outside of limits, ignoring new Z limits')
@@ -305,10 +319,10 @@ class Plume(object):
             particle_filter,
             self._pnts[:, 2].flatten() >= self._z_lim[0])
 
-        # if self._z_lim[1] < 0:
-        particle_filter = np.logical_and(
-            particle_filter,
-            self._pnts[:, 2].flatten() <= self._z_lim[1])
+        if self._z_lim[1] < 0:
+            particle_filter = np.logical_and(
+                particle_filter,
+                self._pnts[:, 2].flatten() <= self._z_lim[1])
         return particle_filter
 
     def apply_constraints(self):
@@ -365,7 +379,7 @@ class Plume(object):
 
         pc = PointCloud()
         pc.header.stamp = rospy.Time.now()
-        pc.header.frame_id = 'gripper_base_link'
+        pc.header.frame_id = 'world'
         if self._pnts is None:
             return None
         pc.points = [Point32(x, y, z) for x, y, z in zip(self.x, self.y, self.z)]
@@ -399,7 +413,7 @@ class Plume(object):
         # Generate marker for the source
         source_marker = Marker()
         source_marker.header.stamp = rospy.Time.now()
-        source_marker.header.frame_id = 'gripper_base_link'
+        source_marker.header.frame_id = 'world'
 
         source_marker.ns = 'plume'
         source_marker.id = 0
@@ -428,7 +442,7 @@ class Plume(object):
         # particles are generated
         limits_marker = Marker()
         limits_marker.header.stamp = rospy.Time.now()
-        limits_marker.header.frame_id = 'gripper_base_link'
+        limits_marker.header.frame_id = 'world'
 
         limits_marker.ns = 'plume'
         limits_marker.id = 1
@@ -457,7 +471,7 @@ class Plume(object):
         # Creating marker for the current velocity vector
         cur_vel_marker = Marker()
         cur_vel_marker.header.stamp = rospy.Time.now()
-        cur_vel_marker.header.frame_id = 'gripper_base_link'
+        cur_vel_marker.header.frame_id = 'world'
 
         cur_vel_marker.id = 1
         cur_vel_marker.type = Marker.ARROW
@@ -473,7 +487,7 @@ class Plume(object):
 
             cur_vel_marker.pose.position.x = self._source_pos[0]
             cur_vel_marker.pose.position.y = self._source_pos[1]
-            cur_vel_marker.pose.position.z = self._source_pos[2] #- 0.8
+            cur_vel_marker.pose.position.z = self._source_pos[2] - 0.8
 
             cur_vel_marker.pose.orientation.x = qt[0]
             cur_vel_marker.pose.orientation.y = qt[1]
