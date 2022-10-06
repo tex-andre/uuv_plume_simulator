@@ -99,7 +99,7 @@ Visualization Manager:
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
       Name: RobotModel
-      Robot Description: /rexrov2/robot_description
+      Robot Description: /rexrov/robot_description
       TF Prefix: ""
       Update Interval: 0
       Value: true
@@ -135,7 +135,7 @@ Visualization Manager:
         Shaft Length: 1
         Shaft Radius: 0.0500000007
         Value: Arrow
-      Topic: /rexrov2/pose_gt
+      Topic: /rexrov/pose_gt
       Unreliable: false
       Value: true
     - Class: rviz/TF
@@ -154,7 +154,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /rexrov2/current_velocity_marker
+      Marker Topic: /rexrov/current_velocity_marker
       Name: Current Velocity Marker
       Namespaces:
         {}
@@ -209,7 +209,7 @@ Visualization Manager:
       Name: Current View
       Near Clip Distance: 0.00999999978
       Pitch: 0.43539834
-      Target Frame: rexrov2/base_link
+      Target Frame: rexrov/base_link
       Value: Orbit (rviz)
       Yaw: 2.07539797
     Saved: ~
