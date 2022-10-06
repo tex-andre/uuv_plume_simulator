@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from plume import Plume
+from uuv_plume_model.plume import Plume
 import numpy as np
 from tf.transformations import quaternion_matrix
 

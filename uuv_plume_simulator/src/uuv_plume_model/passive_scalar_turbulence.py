@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import print_function
-from plume import Plume
+from uuv_plume_model.plume import Plume
 from copy import deepcopy
 import numpy as np
 
@@ -282,10 +282,10 @@ class PlumePassiveScalarTurbulence(Plume):
             # Add the current velocity component
             self._pnts[:, i] += self._current_vel[i] * self._dt
 
-            if i == 2:
-                self._pnts[:, i] += \
-                    (self.compute_plume_rise(self._t + self._dt) -
-                     self.compute_plume_rise(self._t))
-                self._pnts[np.nonzero(self._pnts[:, 2].flatten() >= 0)[0], i] = 0.0
+            # if i == 2:
+            #     self._pnts[:, i] += \
+            #         (self.compute_plume_rise(self._t + self._dt) -
+            #          self.compute_plume_rise(self._t))
+            #     self._pnts[np.nonzero(self._pnts[:, 2].flatten() >= 0)[0], i] = 0.0
 
         return True
