@@ -1,5 +1,5 @@
 <launch>
-  <arg name="use_gazebo" default="false"/>
+  <arg name="use_gazebo" default="true"/>
 
   <group if="$(arg use_gazebo)">
     <node pkg="uuv_plume_simulator" name="set_demo_current_vel_gazebo"
